@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/corticph/slicewriteseek.svg?branch=master)](https://travis-ci.org/corticph/slicewriteseek)
 [![GoDoc](https://godoc.org/github.com/corticph/slicewriteseek?status.svg)](https://godoc.org/github.com/corticph/slicewriteseek)
 # SliceWriteSeek
-SliceWriteSeeker implements WriteSeeker on a slice
+SliceWriteSeeker implements WriteSeeker on a slice. There was a brief [discussion](https://github.com/golang/go/issues/21592) on adding such a feature to the stdlib.
 
 ### Sample Usage
 
