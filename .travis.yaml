@@ -1,0 +1,6 @@
+language: go
+
+go:
+  - stable
+  - master
+  - tip
