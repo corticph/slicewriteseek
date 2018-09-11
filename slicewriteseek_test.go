@@ -37,6 +37,9 @@ func TestLen(t *testing.T) {
 
 func TestSeek(t *testing.T) {
 	s := New()
+	if off, err := s.Seek(0, io.SeekEnd); err != nil || off != 0 {
+		t.Error("Expecting offset to be zero at the end of an empty slice")
+	}
 	if _, err := s.Write([]byte{1, 2, 4}); err != nil {
 		t.Error(err)
 	}
