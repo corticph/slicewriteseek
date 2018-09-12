@@ -62,7 +62,11 @@ func (sws *SliceWriteSeeker) Seek(offset int64, whence int) (int64, error) {
 	case io.SeekCurrent:
 		sws.Index = sws.Index + offset
 	case io.SeekEnd:
-		sws.Index = (sws.Len() - 1) + offset
+		end := sws.Len() - 1
+		if end < 0 {
+			end = 0
+		}
+		sws.Index = end + offset
 	}
 	return sws.Index, nil
 }
