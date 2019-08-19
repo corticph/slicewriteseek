@@ -21,7 +21,7 @@ func (sws *SliceWriteSeeker) Len() int64 {
 func (sws *SliceWriteSeeker) Read(p []byte) (n int, err error) {
 	toRead := sws.Index + int64(len(p))
 	switch {
-	case sws.Index+1 == sws.Len():
+	case sws.Index == sws.Len():
 		p = []byte{}
 	case toRead <= sws.Len():
 		p = sws.Buffer[sws.Index : int(sws.Index)+len(p)]
@@ -38,11 +38,11 @@ func (sws *SliceWriteSeeker) Write(p []byte) (n int, err error) {
 	switch {
 	case sws.Len() == 0:
 		sws.Buffer = p
-		sws.Index = int64(len(p)) - 1
-	case sws.Index+1 == sws.Len():
+		sws.Index = int64(len(p))
+	case sws.Index == sws.Len():
 		sws.Buffer = append(sws.Buffer, p...)
 		sws.Index += writeLen
-	case sws.Index+1 < sws.Len():
+	case sws.Index < sws.Len():
 		switch {
 		case sws.Index+writeLen > sws.Len():
 			sws.Buffer = append(sws.Buffer[:sws.Index], p...)
@@ -62,11 +62,7 @@ func (sws *SliceWriteSeeker) Seek(offset int64, whence int) (int64, error) {
 	case io.SeekCurrent:
 		sws.Index = sws.Index + offset
 	case io.SeekEnd:
-		end := sws.Len() - 1
-		if end < 0 {
-			end = 0
-		}
-		sws.Index = end + offset
+		sws.Index = sws.Len() + offset
 	}
 	return sws.Index, nil
 }

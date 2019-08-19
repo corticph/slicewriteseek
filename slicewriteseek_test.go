@@ -43,17 +43,20 @@ func TestSeek(t *testing.T) {
 	if _, err := s.Write([]byte{1, 2, 4}); err != nil {
 		t.Error(err)
 	}
+	if off, err := s.Seek(0, io.SeekCurrent); err != nil || off != 3 {
+		t.Error("Unexpected seek")
+	}
 	if off, err := s.Seek(0, io.SeekStart); err != nil || off != 0 {
 		t.Error("Unexpected seek")
 	}
 	if s.Buffer[s.Index] != 1 {
 		t.Errorf("Expecting first item to be 1, got %v", s.Buffer[s.Index])
 	}
-	if off, err := s.Seek(0, io.SeekEnd); err != nil || off != 2 {
+	if off, err := s.Seek(0, io.SeekEnd); err != nil || off != 3 {
 		t.Error("Unexpected seek")
 	}
-	if s.Buffer[s.Index] != 4 {
-		t.Errorf("Expecting last item to be 4, got %v", s.Buffer[s.Index])
+	if s.Buffer[s.Index-1] != 4 {
+		t.Errorf("Expecting last item to be 4, got %v", s.Buffer[s.Index-1])
 	}
 	s.Index = 1
 	if off, err := s.Seek(0, io.SeekCurrent); err != nil || off != 1 {
