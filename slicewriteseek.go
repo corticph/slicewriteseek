@@ -19,17 +19,16 @@ func (sws *SliceWriteSeeker) Len() int64 {
 }
 
 func (sws *SliceWriteSeeker) Read(p []byte) (n int, err error) {
-	toRead := sws.Index + int64(len(p))
-	switch {
-	case sws.Index == sws.Len():
+	if sws.Index == sws.Len() {
 		return 0, io.EOF
-	case toRead <= sws.Len():
-		p = sws.Buffer[sws.Index : int(sws.Index)+len(p)]
-	case toRead > sws.Len():
-		p = sws.Buffer[sws.Index:]
 	}
-	n = len(p)
-	sws.Index += int64(len(p))
+	readTo := sws.Index + int64(len(p))
+	if readTo > sws.Len() {
+		readTo = sws.Len()
+	}
+	n = int(readTo - sws.Index)
+	copy(p, sws.Buffer[sws.Index:readTo])
+	sws.Index = readTo
 	return
 }
 
