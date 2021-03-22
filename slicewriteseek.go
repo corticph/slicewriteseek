@@ -22,7 +22,7 @@ func (sws *SliceWriteSeeker) Read(p []byte) (n int, err error) {
 	toRead := sws.Index + int64(len(p))
 	switch {
 	case sws.Index == sws.Len():
-		p = []byte{}
+		return 0, io.EOF
 	case toRead <= sws.Len():
 		p = sws.Buffer[sws.Index : int(sws.Index)+len(p)]
 	case toRead > sws.Len():

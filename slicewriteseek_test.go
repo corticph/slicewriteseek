@@ -1,6 +1,7 @@
 package slicewriteseek
 
 import (
+	"errors"
 	"io"
 	"testing"
 )
@@ -77,8 +78,8 @@ func TestRead(t *testing.T) {
 	}
 	p := make([]byte, 1)
 	n, err := s.Read(p)
-	if err != nil {
-		t.Error(err)
+	if !errors.Is(err, io.EOF) {
+		t.Errorf("Expecting error io.EOF, got %v", err)
 	}
 	if n != 0 {
 		t.Errorf("Expecting to get back an empty slice, got %d", n)
