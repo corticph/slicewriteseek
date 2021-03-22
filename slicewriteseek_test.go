@@ -1,6 +1,8 @@
 package slicewriteseek
 
 import (
+	"errors"
+	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
 )
@@ -77,8 +79,8 @@ func TestRead(t *testing.T) {
 	}
 	p := make([]byte, 1)
 	n, err := s.Read(p)
-	if err != nil {
-		t.Error(err)
+	if !errors.Is(err, io.EOF) {
+		t.Errorf("Expecting error io.EOF, got %v", err)
 	}
 	if n != 0 {
 		t.Errorf("Expecting to get back an empty slice, got %d", n)
@@ -94,6 +96,7 @@ func TestRead(t *testing.T) {
 	if n != 2 {
 		t.Errorf("Expecting to get back an len 2 slice, got %d", n)
 	}
+	assert.Equal(t, p, []byte{1, 2})
 	if _, err = s.Seek(0, io.SeekStart); err != nil {
 		t.Error(err)
 	}
@@ -105,6 +108,7 @@ func TestRead(t *testing.T) {
 	if n != 3 {
 		t.Errorf("Expecting to get back an len 3 slice, got: %d", n)
 	}
+	assert.Equal(t, p, []byte{1, 2, 4, 0})
 }
 
 func TestWriteAt(t *testing.T) {
